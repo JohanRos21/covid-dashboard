@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from io import StringIO
+import matplotlib.pyplot as plt
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error
 
 st.set_page_config(page_title="COVID-19 Viz – Pregunta 2", layout="wide")
 
@@ -123,9 +126,6 @@ st.dataframe(subset_plot.describe().T)
 # ———————————————————————————————————————————————
 # PARTE 3 – Modelado y proyecciones
 # ———————————————————————————————————————————————
-import matplotlib.pyplot as plt
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
-from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error
 
 st.header("3. Modelado y Proyecciones")
 
