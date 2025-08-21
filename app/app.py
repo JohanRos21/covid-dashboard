@@ -1,10 +1,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from io import StringIO
 import matplotlib.pyplot as plt
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error
+from io import StringIO
 
 st.set_page_config(page_title="COVID-19 Viz – Pregunta 2", layout="wide")
 
