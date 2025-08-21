@@ -122,3 +122,69 @@ subset_plot = subset.head(25)
 st.write("Resumen estadístico (simulación de boxplot):")
 st.dataframe(subset_plot.describe().T)
 
+# ———————————————————————————————————————————————
+# 3) Modelado y Proyecciones
+# ———————————————————————————————————————————————
+
+st.header("3. Modelado y Proyecciones")
+
+# Selección de país para analizar
+pais_sel = st.selectbox("Selecciona un país para series de tiempo", sorted(df[cols["country"]].unique()))
+df_pais = df[df[cols["country"]] == pais_sel]
+
+# 🚨 IMPORTANTE: El dataset de un solo día no permite modelado temporal real.
+# Aquí se simula como si tuvieras varios días. Lo ideal es cargar varios CSVs de fechas distintas.
+serie = df_pais.groupby(cols["country"])[C].sum().rename("Confirmed")
+
+if len(serie) == 0:
+    st.warning("No hay datos suficientes para este país.")
+else:
+    # Simulación de serie temporal acumulada
+    ts = pd.Series(serie.values, index=pd.date_range(end=fecha, periods=len(serie)))
+
+    # 3.1 Suavizado de 7 días
+    ts_smooth = ts.rolling(7, min_periods=1).mean()
+    st.subheader("3.1 Serie temporal con suavizado de 7 días")
+    fig, ax = plt.subplots()
+    ts.plot(ax=ax, label="Original")
+    ts_smooth.plot(ax=ax, label="Media móvil 7d")
+    ax.legend()
+    st.pyplot(fig)
+
+    # 3.2 Modelo ETS (Exponential Smoothing)
+    st.subheader("3.2 Pronóstico a 14 días (ETS)")
+    try:
+        model = ExponentialSmoothing(ts, trend="add", seasonal=None)
+        fit = model.fit()
+        forecast = fit.forecast(14)
+
+        # 3.3 Validación con backtesting (train 80%, test 20%)
+        train_size = int(len(ts) * 0.8)
+        train, test = ts.iloc[:train_size], ts.iloc[train_size:]
+        model_bt = ExponentialSmoothing(train, trend="add", seasonal=None)
+        fit_bt = model_bt.fit()
+        pred_bt = fit_bt.forecast(len(test))
+
+        mae = mean_absolute_error(test, pred_bt)
+        mape = mean_absolute_percentage_error(test, pred_bt)
+
+        st.subheader("3.3 Validación del modelo")
+        st.write(f"**MAE:** {mae:.2f}")
+        st.write(f"**MAPE:** {mape:.2%}")
+
+        # 3.4 Forecast con bandas de confianza
+        st.subheader("3.4 Forecast con bandas de confianza")
+        fig, ax = plt.subplots()
+        ts.plot(ax=ax, label="Datos reales")
+        forecast.plot(ax=ax, label="Pronóstico", color="red")
+
+        ci_lower = forecast * 0.9
+        ci_upper = forecast * 1.1
+        ax.fill_between(forecast.index, ci_lower, ci_upper, color="pink", alpha=0.3)
+
+        ax.legend()
+        st.pyplot(fig)
+
+    except Exception as e:
+        st.error(f"Error al ajustar modelo: {e}")
+
