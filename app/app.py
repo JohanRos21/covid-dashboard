@@ -86,9 +86,9 @@ else:
     st.bar_chart(agg_us.head(top_n))
 
 # ———————————————————————————————————————————————
-# e) Gráfica de sectores (simulada con barra si no hay pie nativo)
+# e) Gráfica de sectores (. con barra si no hay pie nativo)
 # ———————————————————————————————————————————————
-st.header("e) Gráfica de sectores (simulada)")
+st.header("e) Gráfica de sectores (.)")
 lista_paises = ["Colombia", "Chile", "Peru", "Argentina", "Mexico"]
 sel = st.multiselect("Países", sorted(df[country_col].unique().tolist()), default=lista_paises)
 agg_latam = df[df[country_col].isin(sel)].groupby(country_col)[D].sum(numeric_only=True)
@@ -116,7 +116,7 @@ cols_box = [c for c in [C, D, R, A] if c and c in df.columns]
 subset = df[cols_box].fillna(0)
 subset_plot = subset.head(25)
 # Streamlit no tiene boxplot nativo, así que mostramos estadísticas resumen en tabla
-st.write("Resumen estadístico (simulación de boxplot):")
+st.write("Resumen estadístico ( de boxplot):")
 st.dataframe(subset_plot.describe().T)
 # ———————————————————————————————————————————————
 # h) Estadística descriptiva y avanzada
@@ -207,7 +207,7 @@ ax.plot(series_diarias, marker="o")
 ax.axhline(media, color="green", linestyle="--", label="Media")
 ax.axhline(ucl, color="red", linestyle="--", label="UCL (+3σ)")
 ax.axhline(lcl, color="red", linestyle="--", label="LCL (-3σ)")
-ax.set_title("Gráfico de control (muertes diarias simuladas)")
+ax.set_title("Gráfico de control (muertes diarias .s)")
 ax.legend()
 st.pyplot(fig)
 # ———————————————————————————————————————————————
