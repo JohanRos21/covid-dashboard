@@ -102,16 +102,16 @@ else:
     st.warning("Sin datos para los países seleccionados")
 
 # ———————————————————————————————————————————————
-# f) Histograma del total de fallecidos por país (simulado con bar_chart)
+# f) Histograma del total de fallecidos por país (. con bar_chart)
 # ———————————————————————————————————————————————
 st.header("f) Histograma de fallecidos por país")
 muertes_pais = df.groupby(country_col)[D].sum(numeric_only=True)
 st.bar_chart(muertes_pais)
 
 # ———————————————————————————————————————————————
-# g) Boxplot de Confirmed, Deaths, Recovered, Active (simulado con box_chart)
+# g) Boxplot de Confirmed, Deaths, Recovered, Active (. con box_chart)
 # ———————————————————————————————————————————————
-st.header("g) Boxplot (simulado)")
+st.header("g) Boxplot (.)")
 cols_box = [c for c in [C, D, R, A] if c and c in df.columns]
 subset = df[cols_box].fillna(0)
 subset_plot = subset.head(25)
